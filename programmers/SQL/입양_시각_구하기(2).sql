@@ -1,0 +1,19 @@
+# 입양 시각 구하기(2)
+
+WITH RECURSIVE HOUR_ALL AS
+(
+    SELECT 0 AS HOUR
+    UNION ALL
+    SELECT HOUR + 1 
+      FROM HOUR_ALL 
+     WHERE HOUR < 23
+)
+
+
+           SELECT A.HOUR, IFNULL(B.COUNT, 0) AS COUNT
+             FROM HOUR_ALL A       
+  LEFT OUTER JOIN (SELECT DATE_FORMAT(DATETIME, '%H') AS HOUR, COUNT(ANIMAL_ID) AS COUNT
+                     FROM ANIMAL_OUTS
+                 GROUP BY HOUR
+                 ORDER BY HOUR) B
+               ON A.HOUR = B.HOUR
